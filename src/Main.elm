@@ -37,6 +37,61 @@ stringFromIntInBase base number =
         in restStr ++ String.fromInt last
 
 
+describeSeximal2Digits : String -> Maybe String
+describeSeximal2Digits number =
+    let digitList = String.toList number
+        digits =
+            case digitList of
+                [second, first] -> Just (first, second)
+                [first] -> Just ('0', first)
+                _ -> Nothing
+    in 
+        digits
+        |> Maybe.andThen (\(firstDigit, secondDigit) ->
+            case (secondDigit, firstDigit) of
+                ('1', '0') -> Just "Six"
+                ('1', '1') -> Just "Seven"
+                ('1', '2') -> Just "Eight"
+                ('1', '3') -> Just "Nine"
+                ('1', '4') -> Just "Ten"
+                ('1', '5') -> Just "Eleven"
+                ('2', '0') -> Just "Twelve"
+                _ -> 
+                    let firstDigitName =
+                            case firstDigit of
+                                '0' -> Just "Zero"
+                                '1' -> Just "One"
+                                '2' -> Just "Two"
+                                '3' -> Just "Three"
+                                '4' -> Just "Four"
+                                '5' -> Just "Five"
+                                _ -> Nothing
+                        secondDigitName =
+                            case secondDigit of
+                                '0' -> Just ""
+                                '2' -> Just "Dozen "
+                                '3' -> Just "Thirsy "
+                                '4' -> Just "Foursy "
+                                '5' -> Just "Fifsy "
+                                _ -> Nothing
+                    in
+                        Maybe.map2 (++) secondDigitName firstDigitName
+                        |> Maybe.map (String.replace " Zero" "")
+        )
+
+
+describeSeximalNumber : String -> Maybe String
+describeSeximalNumber number =
+    String.uncons number |> Maybe.andThen (\(sign, afterSign) ->
+        if sign == '-' then
+            describeSeximalNumber afterSign
+            |> Maybe.map (\str -> "Minus " ++ str)
+        else
+            (String.padLeft 2 '0' number)
+            |> describeSeximal2Digits
+    )
+
+
 main : Program () Model Msg
 main =
     Browser.sandbox
@@ -158,16 +213,23 @@ viewButtons model =
 
 viewOutput : Model -> Element Msg
 viewOutput model = 
-    row
+    column
         [ centerX
         , padding 50
         , Font.color colors.saturated
         , Font.size 40
         , Font.extraBold
         ]
-        (case model.input of
-            NumberInput n -> [Element.text (stringFromIntInBase 6 n)]
-            _ -> [])
+        (
+            case model.input of
+                NumberInput n ->
+                    let number  = stringFromIntInBase 6 n
+                        seximal = describeSeximalNumber number
+                    in
+                        el [ centerX ] (text (stringFromIntInBase 6 n))
+                        :: (Maybe.map (text >> List.singleton) seximal |> Maybe.withDefault [])
+                _ -> []
+        )
 
 
 colors : { dark: Color, light: Color, saturated: Color }
