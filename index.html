@@ -12570,8 +12570,206 @@ var $author$project$Main$viewInput = function (model) {
 			}()
 		});
 };
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Maybe$map2 = F3(
+	function (func, ma, mb) {
+		if (ma.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 'Nothing') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				return $elm$core$Maybe$Just(
+					A2(func, a, b));
+			}
+		}
+	});
+var $elm$core$String$replace = F3(
+	function (before, after, string) {
+		return A2(
+			$elm$core$String$join,
+			after,
+			A2($elm$core$String$split, before, string));
+	});
+var $elm$core$String$foldr = _String_foldr;
+var $elm$core$String$toList = function (string) {
+	return A3($elm$core$String$foldr, $elm$core$List$cons, _List_Nil, string);
+};
+var $author$project$Main$describeSeximal2Digits = function (number) {
+	var digitList = $elm$core$String$toList(number);
+	var digits = function () {
+		_v4$2:
+		while (true) {
+			if (digitList.b) {
+				if (digitList.b.b) {
+					if (!digitList.b.b.b) {
+						var second = digitList.a;
+						var _v5 = digitList.b;
+						var first = _v5.a;
+						return $elm$core$Maybe$Just(
+							_Utils_Tuple2(first, second));
+					} else {
+						break _v4$2;
+					}
+				} else {
+					var first = digitList.a;
+					return $elm$core$Maybe$Just(
+						_Utils_Tuple2(
+							_Utils_chr('0'),
+							first));
+				}
+			} else {
+				break _v4$2;
+			}
+		}
+		return $elm$core$Maybe$Nothing;
+	}();
+	return A2(
+		$elm$core$Maybe$andThen,
+		function (_v0) {
+			var firstDigit = _v0.a;
+			var secondDigit = _v0.b;
+			var _v1 = _Utils_Tuple2(secondDigit, firstDigit);
+			_v1$7:
+			while (true) {
+				switch (_v1.a.valueOf()) {
+					case '1':
+						switch (_v1.b.valueOf()) {
+							case '0':
+								return $elm$core$Maybe$Just('Six');
+							case '1':
+								return $elm$core$Maybe$Just('Seven');
+							case '2':
+								return $elm$core$Maybe$Just('Eight');
+							case '3':
+								return $elm$core$Maybe$Just('Nine');
+							case '4':
+								return $elm$core$Maybe$Just('Ten');
+							case '5':
+								return $elm$core$Maybe$Just('Eleven');
+							default:
+								break _v1$7;
+						}
+					case '2':
+						if ('0' === _v1.b.valueOf()) {
+							return $elm$core$Maybe$Just('Twelve');
+						} else {
+							break _v1$7;
+						}
+					default:
+						break _v1$7;
+				}
+			}
+			var secondDigitName = function () {
+				switch (secondDigit.valueOf()) {
+					case '0':
+						return $elm$core$Maybe$Just('');
+					case '2':
+						return $elm$core$Maybe$Just('Dozen ');
+					case '3':
+						return $elm$core$Maybe$Just('Thirsy ');
+					case '4':
+						return $elm$core$Maybe$Just('Foursy ');
+					case '5':
+						return $elm$core$Maybe$Just('Fifsy ');
+					default:
+						return $elm$core$Maybe$Nothing;
+				}
+			}();
+			var firstDigitName = function () {
+				switch (firstDigit.valueOf()) {
+					case '0':
+						return $elm$core$Maybe$Just('Zero');
+					case '1':
+						return $elm$core$Maybe$Just('One');
+					case '2':
+						return $elm$core$Maybe$Just('Two');
+					case '3':
+						return $elm$core$Maybe$Just('Three');
+					case '4':
+						return $elm$core$Maybe$Just('Four');
+					case '5':
+						return $elm$core$Maybe$Just('Five');
+					default:
+						return $elm$core$Maybe$Nothing;
+				}
+			}();
+			return A2(
+				$elm$core$Maybe$map,
+				A2($elm$core$String$replace, ' Zero', ''),
+				A3($elm$core$Maybe$map2, $elm$core$Basics$append, secondDigitName, firstDigitName));
+		},
+		digits);
+};
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+var $elm$core$String$repeatHelp = F3(
+	function (n, chunk, result) {
+		return (n <= 0) ? result : A3(
+			$elm$core$String$repeatHelp,
+			n >> 1,
+			_Utils_ap(chunk, chunk),
+			(!(n & 1)) ? result : _Utils_ap(result, chunk));
+	});
+var $elm$core$String$repeat = F2(
+	function (n, chunk) {
+		return A3($elm$core$String$repeatHelp, n, chunk, '');
+	});
+var $elm$core$String$padLeft = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			A2(
+				$elm$core$String$repeat,
+				n - $elm$core$String$length(string),
+				$elm$core$String$fromChar(_char)),
+			string);
+	});
+var $author$project$Main$describeSeximalNumber = function (number) {
+	return A2(
+		$elm$core$Maybe$andThen,
+		function (_v0) {
+			var sign = _v0.a;
+			var afterSign = _v0.b;
+			return _Utils_eq(
+				sign,
+				_Utils_chr('-')) ? A2(
+				$elm$core$Maybe$map,
+				function (str) {
+					return 'Minus ' + str;
+				},
+				$author$project$Main$describeSeximalNumber(afterSign)) : $author$project$Main$describeSeximal2Digits(
+				A3(
+					$elm$core$String$padLeft,
+					2,
+					_Utils_chr('0'),
+					number));
+		},
+		$elm$core$String$uncons(number));
+};
 var $mdgriffith$elm_ui$Internal$Flag$fontWeight = $mdgriffith$elm_ui$Internal$Flag$flag(13);
 var $mdgriffith$elm_ui$Element$Font$extraBold = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.textExtraBold);
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
 var $elm$core$Basics$modBy = _Basics_modBy;
 var $author$project$Main$stringFromIntInBase = F2(
 	function (base, number) {
@@ -12592,7 +12790,7 @@ var $author$project$Main$stringFromIntInBase = F2(
 	});
 var $author$project$Main$viewOutput = function (model) {
 	return A2(
-		$mdgriffith$elm_ui$Element$row,
+		$mdgriffith$elm_ui$Element$column,
 		_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$centerX,
@@ -12605,11 +12803,23 @@ var $author$project$Main$viewOutput = function (model) {
 			var _v0 = model.input;
 			if (_v0.$ === 'NumberInput') {
 				var n = _v0.a;
-				return _List_fromArray(
-					[
+				var number = A2($author$project$Main$stringFromIntInBase, 6, n);
+				var seximal = $author$project$Main$describeSeximalNumber(number);
+				return A2(
+					$elm$core$List$cons,
+					A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[$mdgriffith$elm_ui$Element$centerX]),
 						$mdgriffith$elm_ui$Element$text(
-						A2($author$project$Main$stringFromIntInBase, 6, n))
-					]);
+							A2($author$project$Main$stringFromIntInBase, 6, n))),
+					A2(
+						$elm$core$Maybe$withDefault,
+						_List_Nil,
+						A2(
+							$elm$core$Maybe$map,
+							A2($elm$core$Basics$composeR, $mdgriffith$elm_ui$Element$text, $elm$core$List$singleton),
+							seximal)));
 			} else {
 				return _List_Nil;
 			}
